@@ -17,7 +17,7 @@ spec:
         - microservice_name
         - environment
       properties:
-        name:
+        microservice_name:
           title: microservice_name
           type: string
           description: Name of the microservice
