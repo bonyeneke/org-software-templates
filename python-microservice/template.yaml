@@ -42,7 +42,7 @@ spec:
       input:
         url: ./template
         values:
-          name: ${{ parameters.microservice_name }}
+          microservice_name: ${{ parameters.microservice_name }}
           environment: ${{ parameters.environment }}
 
     - id: publish
