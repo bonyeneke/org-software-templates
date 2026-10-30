@@ -1,7 +1,7 @@
-site_name: "python-app"
-site_description: "Documentation for the Python application"
+site_name: "${{values.microservice_name}}"
+site_description: "Documentation for the ${{values.microservice_name}} application"
 
-repo_url: https://github.com/bonyeneke/python-app
+repo_url: https://github.com/bonyeneke/${{values.microservice_name}}
 edit_uri: edit/main/docs/
 
 plugins:
