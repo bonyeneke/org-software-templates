@@ -1,0 +1,70 @@
+# Notice the v1beta3 version
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# some metadata about the template itself
+metadata:
+  name: python-microservice-template
+  title: A Test Action template for python microservice
+  description: Python Microservice template
+spec:
+  owner: group:default/development
+  type: service
+
+  # these are the steps which are rendered in the frontend with the form input
+  parameters:
+    - title: Fill in some steps
+      required:
+        - microservice_name
+        - environment
+      properties:
+        name:
+          title: microservice_name
+          type: string
+          description: Name of the microservice
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        environment:
+          title: environment
+          type: string
+          description: environment to be deployed to
+          enum:
+            - Development
+            - QA
+            - UAT
+            - Production
+
+  # here's the steps that are executed in series in the scaffolder backend
+  steps:
+    - id: fetchBase
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./template
+        values:
+          name: ${{ parameters.microservice_name }}
+          environment: ${{ parameters.environment }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        description: This is ${{ parameters.microservice_name }}
+        repoUrl: github.com?owner=bonyeneke&repo=${{parameters.microservice_name}}
+        defaultBranch: 'main'
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  # some outputs which are saved along with the job for use in the frontend
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
